@@ -57,7 +57,8 @@ public class HomeActivity extends Activity {
         Intent mIntent;
 
         String[] myClasses = {
-                "MyScheduleActivity"
+                ".ui.schedule.MyScheduleActivity"
+                ,".ui.sessions.BrowseSessionsActivity"
         };
 
         public PlaceholderFragment() {
@@ -80,7 +81,7 @@ public class HomeActivity extends Activity {
 
             String className = myClasses[position];
             try {
-                Class targetClass = Class.forName("com.eric.playio2014techniques." + className);
+                Class targetClass = Class.forName("com.eric.playio2014techniques" + className);
                 mIntent = new Intent(getActivity(), targetClass);
                 startActivity(mIntent);
 
