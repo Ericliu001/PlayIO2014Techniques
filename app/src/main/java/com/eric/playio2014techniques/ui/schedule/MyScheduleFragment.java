@@ -1,4 +1,4 @@
-package com.eric.playio2014techniques;
+package com.eric.playio2014techniques.ui.schedule;
 
 import android.app.Activity;
 import android.app.ListFragment;
@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.eric.playio2014techniques.R;
 
 /**
  * Created by HQ on 2014/10/8.

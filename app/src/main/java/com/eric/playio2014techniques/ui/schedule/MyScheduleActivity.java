@@ -1,4 +1,4 @@
-package com.eric.playio2014techniques;
+package com.eric.playio2014techniques.ui.schedule;
 
 import android.app.Activity;
 import android.app.ListFragment;
@@ -7,6 +7,8 @@ import android.support.v4.view.ViewPager;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.eric.playio2014techniques.R;
+import com.eric.playio2014techniques.model.ScheduleHelper;
 import com.eric.playio2014techniques.util.Config;
 
 import java.util.HashSet;
@@ -25,8 +27,8 @@ public class MyScheduleActivity extends Activity  implements MyScheduleFragment.
 
 
 
-
-
+    // The ScheduleHelper is responsible for feeding data in a format suitable to the Adapter.
+    private ScheduleHelper mDataHelper;
 
 
 
@@ -41,19 +43,29 @@ public class MyScheduleActivity extends Activity  implements MyScheduleFragment.
         mViewPager = (ViewPager) findViewById(R.id.view_pager);
 
 
-        String[] listItems = {
-                "Happy birthday"
-                ,"I am rich"
-                ,"You suck"
-        };
+        mDataHelper = new ScheduleHelper(this);
+
         for (int i = 0; i < Config.CONFERENCE_TOTAL_DAYS; i++){
-            mScheduleAdapters[i] = new MyScheduleAdapter(this, android.R.layout.simple_list_item_1, listItems);
+            mScheduleAdapters[i] = new MyScheduleAdapter(this, null);
         };
 
         mViewPagerAdapter = new OurViewPagerAdapter(getFragmentManager());
         mViewPager.setAdapter(mViewPagerAdapter);
     }
 
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        updateData();
+    }
+
+    private void updateData() {
+        for (int i = 0; i < Config.CONFERENCE_TOTAL_DAYS; i++) {
+            mDataHelper.getScheduleDataAsync(mScheduleAdapters[i]);
+        }
+
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

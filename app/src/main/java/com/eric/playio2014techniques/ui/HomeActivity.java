@@ -1,4 +1,4 @@
-package com.eric.playio2014techniques;
+package com.eric.playio2014techniques.ui;
 
 import android.app.Activity;
 import android.app.ListFragment;
@@ -9,6 +9,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+
+import com.eric.playio2014techniques.R;
 
 
 public class HomeActivity extends Activity {
