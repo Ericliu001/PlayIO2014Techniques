@@ -37,7 +37,22 @@ public class BrowseSessionsActivity extends Activity implements CollectionView.C
             ,"Musket"
             ,"MG45"
             ,"FG42"
-
+            ,"M-1"
+            ,"FAK-B"
+            ,"Cake"
+            ,"Sweet"
+            ,"Sucks"
+            ,"I wish I could"
+            ,"This is stupid"
+            ,"No other God"
+            ,"Jesus Christ"
+            ,"This is my God"
+            ,"I like Tanks"
+            ,"Sherman"
+            ,"Tiger"
+            ,"Panther"
+            ,"Churchill"
+            ,"Chinese whisper"
     };
 
     @Override
@@ -48,14 +63,14 @@ public class BrowseSessionsActivity extends Activity implements CollectionView.C
         mCollectionView = (CollectionView) findViewById(R.id.cvSessions);
         mCollectionView.passInCollectionViewCallbacks(this);
 
-        int i = 0;
+        float i = 0f;
         for(String name: names){
             MyGun gun = new MyGun();
             gun.name = name;
             gun.calibre = i;
 
             guns.add(gun);
-             ++i;
+             i+= 0.1f;
         }
 
 
