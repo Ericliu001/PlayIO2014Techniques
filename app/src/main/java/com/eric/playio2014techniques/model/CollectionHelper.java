@@ -2,6 +2,8 @@ package com.eric.playio2014techniques.model;
 
 import android.os.AsyncTask;
 
+import com.eric.playio2014techniques.ui.sessions.CollectionView;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,21 +12,13 @@ import java.util.List;
  */
 public class CollectionHelper<T> {
 
-    // The data source list
     private List<T> mList = null;
 
     public CollectionHelper(List<T> list) {
-        mList = list; // get the data source
+        mList = list;
     }
 
-
-
-    public interface CollecionHelperListener<T>{
-       void appendToDataList(List<T> items);
-
-    }
-
-    public void getCollectionDataAsync(int skip, int top, final CollecionHelperListener<T> callbacks){
+    public void getCollectionDataAsync(int skip, int top, final CollectionView<T> collectionView){
         new AsyncTask<Integer, Void, List<T>>(){
 
 
@@ -56,7 +50,7 @@ public class CollectionHelper<T> {
             @Override
             protected void onPostExecute(List<T> items) {
 
-                callbacks.appendToDataList(items);
+                collectionView.appendToDataList(items);
             }
         }.execute(skip, top);
 

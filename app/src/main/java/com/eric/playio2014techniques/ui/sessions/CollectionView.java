@@ -7,13 +7,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.BaseAdapter;
-import android.widget.Filter;
-import android.widget.Filterable;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-
-import com.eric.playio2014techniques.model.CollectionHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,18 +17,17 @@ import java.util.List;
 /**
  * Created by HQ on 2014/10/9.
  */
-public class CollectionView<T> extends ListView implements CollectionHelper.CollecionHelperListener<T> {
+public class CollectionView<T> extends ListView{
     public static final int NUMBER_OF_ITEMS_LOADED = 20;
     // The representation of all data, no use now
 
     // data List
-    private List<T> dataList = new ArrayList<T>();
+    private ArrayList<T> dataList = new ArrayList<T>();
 
     // The callback to supply View Layout and populate data into rows
     private CollectionViewCallbacks mCallbacks = null;
 
     private MyListAdapter mListAdapter = null;
-    private FilterMethod mFilterMethod = null;
 
     protected static final int VIEW_TYPE_LOADING = 0;
     protected static final int VIEW_TYPE_ACTIVE = 1;
@@ -40,7 +35,7 @@ public class CollectionView<T> extends ListView implements CollectionHelper.Coll
     private boolean isLoading = false;
 
 
-    public void setCallbacks(CollectionViewCallbacks callbacks) {
+    public void passInCollectionViewCallbacks(CollectionViewCallbacks callbacks){
         this.mCallbacks = callbacks;
     }
 
@@ -60,36 +55,23 @@ public class CollectionView<T> extends ListView implements CollectionHelper.Coll
         setOnScrollListener(new MyScrollListener());
     }
 
-
-    public interface CollectionViewCallbacks<T> {
+    public interface CollectionViewCallbacks<T>{
 
 
         View newCollectionItemView(Context context, ViewGroup parent);
-
         void bindCollectionItemView(Context context, View view, T data);
 
         int getServerListSize();
-
         void loadMore(int skip, int top);
     }
 
 
-    private void refresh(){
-        dataList.clear();
-        serverListSize = -1;
-
+    public void loadFirstRound(){
+        // TODO: load the first round of data
     }
 
-
-    public void loadFirstRound() {
-        refresh();
-        loadMoreResult(0, NUMBER_OF_ITEMS_LOADED);
-    }
-
-    public void loadMoreResult(int skip, int top) {
-        if (mCallbacks != null && isLoading == false) {
-
-
+    public void loadMoreResult(int skip, int top){
+        if (mCallbacks != null){
             isLoading = true;
             serverListSize = mCallbacks.getServerListSize();
             mCallbacks.loadMore(skip, top);
@@ -97,21 +79,7 @@ public class CollectionView<T> extends ListView implements CollectionHelper.Coll
     }
 
 
-    /**
-     * Filter the dataList, only present results that meet certain conditions
-     */
-    public void filterResult(FilterMethod method) {
-        mFilterMethod = method;
-        mListAdapter.getFilter().filter("not used");
-
-    }
-
-    public interface FilterMethod<T> {
-        boolean performFiltering(T t);
-    }
-
-
-    protected class MyListAdapter extends BaseAdapter implements Filterable {
+    protected class MyListAdapter extends BaseAdapter {
 
 
         @Override
@@ -155,63 +123,28 @@ public class CollectionView<T> extends ListView implements CollectionHelper.Coll
         public View getView(int position, View convertView, ViewGroup parent) {
 
 
-            if (getItemViewType(position) == VIEW_TYPE_LOADING) {
+
+            if (getItemViewType(position) == VIEW_TYPE_LOADING){
                 // indicate that the List is loading data
                 return getFooterView(position, convertView, parent);
             }
 
 
-            View dataRow = getRowView(position, convertView, parent);
+            View dataRow =  getRowView(position, convertView, parent);
 
 
             return dataRow;
         }
 
 
-        @Override
-        public Filter getFilter() {
-            Filter filter = new Filter() {
-                @Override
-                protected FilterResults performFiltering(CharSequence constraint) {
-                    FilterResults results = new FilterResults();
 
-                    if (mFilterMethod != null) {
-                        ArrayList<T> resultList = new ArrayList<T>();
-
-                        for (T t : dataList) {
-                            if (mFilterMethod.performFiltering(t)) {
-                                resultList.add(t);
-                            }
-                        }
-
-                        results.values = resultList;
-                        results.count = resultList.size();
-                    }
-
-                    return results;
-                }
-
-                @Override
-                protected void publishResults(CharSequence constraint, FilterResults results) {
-                    // Now we have to inform the adapter about the new list filtered
-                    if (results.count == 0)
-                        notifyDataSetInvalidated();
-                    else {
-                        dataList = (List<T>) results.values;
-                        notifyDataSetChanged();
-                    }
-
-                }
-            };
-            return filter;
-        }
     }
 
     private View getFooterView(int position, View convertView, ViewGroup parent) {
-        if (position >= serverListSize && serverListSize >= 0) {
+        if (position >= serverListSize && serverListSize >=0){
             // indicate that the list has reached the last row.
             return getLastRowView();
-        } else {
+        }else {
             return getLoadingView();
         }
 
@@ -225,19 +158,16 @@ public class CollectionView<T> extends ListView implements CollectionHelper.Coll
     private View getLastRowView() {
         TextView tvLastRow = new TextView(getContext());
         tvLastRow.setText("Reached the last row.");
-        tvLastRow.setTextColor(getResources().getColor(android.R.color.holo_green_dark));
         tvLastRow.setGravity(Gravity.CENTER);
-
-
         return tvLastRow;
     }
 
     private View getRowView(int position, View convertView, ViewGroup parent) {
-        if (mCallbacks == null) {
+        if (mCallbacks == null){
             return convertView != null ? convertView : new View(getContext());
         }
 
-        if (convertView == null) {
+        if (convertView == null){
             convertView = mCallbacks.newCollectionItemView(getContext(), parent);
         }
 
@@ -256,19 +186,19 @@ public class CollectionView<T> extends ListView implements CollectionHelper.Coll
 
         @Override
         public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-            if (!isLoading
+            if (! isLoading
                     && (dataList.size() < serverListSize)
                     && (firstVisibleItem + visibleItemCount >= totalItemCount - 1)
 
                     ) {
 
-                loadMoreResult(dataList.size(), NUMBER_OF_ITEMS_LOADED);
+                   loadMoreResult(dataList.size(), NUMBER_OF_ITEMS_LOADED);
             }
         }
     }
 
-    @Override
-    public void appendToDataList(List<T> items) {
+
+    public void appendToDataList(List<T> items){
         isLoading = false;
         dataList.addAll(items);
         if (mCallbacks != null) {
@@ -277,4 +207,9 @@ public class CollectionView<T> extends ListView implements CollectionHelper.Coll
         mListAdapter.notifyDataSetChanged();
     }
 
+    public void refresh(){
+        dataList.clear();
+        setAdapter(new MyListAdapter());
+        mListAdapter.notifyDataSetChanged();
+    }
 }

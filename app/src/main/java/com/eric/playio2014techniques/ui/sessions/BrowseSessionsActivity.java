@@ -53,21 +53,6 @@ public class BrowseSessionsActivity extends Activity implements CollectionView.C
             ,"Panther"
             ,"Churchill"
             ,"Chinese whisper"
-            ,"Giant"
-            ,"Peculiar"
-            ,"Equilibrium"
-            ,"Temple"
-            ,"You are shit"
-            ,"Man is stupid"
-            ,"Icon"
-            ,"Irony"
-            ,"Why must I do this"
-            ,"ISIS"
-            ,"American"
-            ,"Aussie Land"
-            ,"Father"
-            ,"South Road"
-            ,"Mainland China"
     };
 
     @Override
@@ -76,7 +61,7 @@ public class BrowseSessionsActivity extends Activity implements CollectionView.C
         setContentView(R.layout.activity_browse_sessions);
 
         mCollectionView = (CollectionView) findViewById(R.id.cvSessions);
-        mCollectionView.setCallbacks(this);
+        mCollectionView.passInCollectionViewCallbacks(this);
 
         float i = 0f;
         for(String name: names){
@@ -90,14 +75,9 @@ public class BrowseSessionsActivity extends Activity implements CollectionView.C
 
 
         mDataHelper = new CollectionHelper(guns);
-//        mDataHelper.getCollectionDataAsync(0, CollectionView.NUMBER_OF_ITEMS_LOADED, mCollectionView);
+        mDataHelper.getCollectionDataAsync(0, CollectionView.NUMBER_OF_ITEMS_LOADED, mCollectionView);
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        mCollectionView.loadFirstRound();
-    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
